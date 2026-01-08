@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from typing import Generator
 import os
-from config.env import settings
+from app.config.env import settings
 
 # Chemin du fichier database.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

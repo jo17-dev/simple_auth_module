@@ -1,8 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.sqltypes import Boolean, DateTime, Float
+from sqlalchemy.sql.sqltypes import DateTime
 import datetime
-from sqlalchemy.ext.mutable import MutableList
 from app.data.database import Base
 
 class Role(Base):
