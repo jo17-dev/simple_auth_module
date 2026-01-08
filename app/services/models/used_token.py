@@ -9,6 +9,7 @@ class UsedToken(Base):
     __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    identifier = Column(String(255))
     content = Column(String(255))
     created_at = Column(DateTime, default=datetime.datetime.now)
     updated_at = Column(DateTime, onupdate=datetime.datetime.now)

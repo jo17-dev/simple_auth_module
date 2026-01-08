@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.services.model  import User
+from app.services.model  import UsedToken
 from app.data.database import Base
 
 
@@ -26,4 +27,9 @@ def user():
         password="hashed_password_hahahaha"
     )
 
-
+@pytest.fixture
+def used_token():
+    return UsedToken(
+        content = "real.token.hahah",
+        user_id = 23
+    )
