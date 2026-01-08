@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REFRESH_TOKEN_EXPIRE_MINUTES: int
     PROJECT_NAME: str = "Simple auth mobule"
     API_VERSION: str
     ALGORITHM: str

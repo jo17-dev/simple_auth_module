@@ -1,16 +1,16 @@
 from fastapi import APIRouter
-from app.interface.view_models.user import UserCreation
+from app.interface.view_models.user import UserCreation, UserIdentifier, UserInfo
 
 router = APIRouter()
 
 # create a user a( and issue a token )
 @router.post("")
-def create_user(user: UserCreation ):
+def create_user(user: UserCreation )->UserInfo:
     pass
 
 # get a user infos
 @router.get("")
-def get_user(user: UserCreation):
+def get_user(user: UserCreation)->UserInfo:
     pass
 
 # update a user

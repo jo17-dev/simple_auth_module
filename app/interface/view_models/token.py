@@ -6,10 +6,11 @@ class TokenView(BaseModel):
 
 
 class TokenDatas(BaseModel):
-    uid: str
-    typ: str
-    exp: int
-    role: str
+    uid: str = None
+    typ: str = None
+    exp: int | None = None
+    role: str | None = None
+    id_token: str | None = None
 
 
 class TokenCreated(BaseModel):

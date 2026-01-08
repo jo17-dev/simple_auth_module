@@ -4,7 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from app.services.model  import User
 from app.services.model  import UsedToken
 from app.data.database import Base
-
+from datetime import datetime, timedelta
+from app.interface.view_models.token  import TokenDatas
 
 @pytest.fixture(scope="function")
 def db_session():
@@ -33,3 +34,11 @@ def used_token():
         content = "real.token.hahah",
         user_id = 23
     )
+
+@pytest.fixture
+def token_datas():
+    return TokenDatas(uid="1", typ="bearer", role="admin", exp=int((datetime.now() + timedelta(minutes=5)).timestamp()), id_token=None)
+
+@pytest.fixture
+def refresh_token_datas():
+    return TokenDatas(uid="1", typ="refresh", role=None, exp=int((datetime.now() + timedelta(minutes=5)).timestamp()), id_token="refresh123")
