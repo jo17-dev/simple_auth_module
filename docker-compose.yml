@@ -1,0 +1,34 @@
+services:
+  sam_db:
+    image: mysql:8.0
+    container_name: sam_db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+  sam_application:
+    build:
+      context: .
+      dockerfile: Dockerfile.auth
+    container_name: sam_application
+    ports:
+      - "${PORT}:8000"
+    environment:
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      sam_db:
+        condition: service_healthy
