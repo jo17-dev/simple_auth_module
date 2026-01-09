@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field, List
+from pydantic import BaseModel, Field
 from typing import List
 from enum import Enum
+from app.interface.view_models.token import TokenCreated
 
 class RoleEnum(str, Enum):
     admin = "admin"
@@ -8,16 +9,22 @@ class RoleEnum(str, Enum):
     manager = "manager"
 
 
-class UserCreation(BaseModel):
+class UserBase(BaseModel):
     email: str  = Field(..., example="email@example.com")
-    password: str = Field(..., example="ReaaaalPassword!")
-    role: str = Field("user",example="Client")
+    roles: List[RoleEnum] = Field(..., example=["user", "admin"])
+
+
+class UserCreation(UserBase):
+    password: str = Field(..., example="ReaaaalPass23word!")
 
 
 class UserIdentifier(BaseModel):
     id: int
 
-class UserInfo(BaseModel):
+class UserInfo(UserBase):
     id: int
-    email: str  = Field(..., example="email@example.com")
-    roles: List[RoleEnum] = Field(..., example=["user", "admin"])
+
+
+class UserCreated(UserBase, TokenCreated):
+    email: str
+    roles: List[RoleEnum]

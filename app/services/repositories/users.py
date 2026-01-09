@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.services.exceptions.user_exception import UserException
-from app.services.model import User
+from app.services.model import User, Role
 
 class UserRepo:
     def add(self, user: User, db: Session)->User:

@@ -14,5 +14,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Simple auth mobule"
     API_VERSION: str
     ALGORITHM: str
+    ROLE_SEPARATOR: str ="|" # il s'agit du separateur de roles dans les tokens
 
 settings = Settings()

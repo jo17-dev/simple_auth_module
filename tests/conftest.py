@@ -1,7 +1,7 @@
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from app.services.model  import User
+from app.services.model  import User, Role
 from app.services.model  import UsedToken
 from app.data.database import Base
 from datetime import datetime, timedelta
@@ -14,6 +14,10 @@ def db_session():
 
     Base.metadata.create_all(engine)
     session = TestingSessionLocal()
+
+    insert_roles_sql = text("INSERT INTO roles (title) VALUES ('USER'), ('MANAGER'), ('ADMIN')")
+    session.execute(insert_roles_sql)
+    session.commit()
 
     yield session
 

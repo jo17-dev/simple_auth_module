@@ -1,20 +1,10 @@
 import jwt
 from app.config.env import settings
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
-from argon2 import PasswordHasher
 from datetime import datetime
 from app.interface.view_models.token import TokenView, TokenDatas, TokenCreated
 from datetime import timedelta
 import uuid
-
-password_hasher = PasswordHasher(
-    time_cost=3,
-    memory_cost=65536,
-    parallelism=2,
-    hash_len=32,
-    salt_len=16
-)
 
 # Generalate access and refresh tokens
 def issue_token(user_id: int, rolesString: str)-> TokenCreated:

@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Response, Depends
-from app.interface.view_models.user import UserCreation
 from app.interface.view_models.token import TokenDatas, TokenView, TokenCreated
 
 router = APIRouter()
