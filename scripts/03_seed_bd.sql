@@ -2,8 +2,8 @@ USE sam_db;
 
 INSERT INTO roles (title, created_at)
 VALUES
-    ('GUEST', NOW()),
-    ('CLIENT', NOW()),
+    ('USER', NOW()),
+    ('MANAGER', NOW()),
     ('ADMIN', NOW());
 
 -- the password is: passe

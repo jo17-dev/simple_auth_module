@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 import datetime
 from app.data.database import Base
+from app.services.models.user_role import user_role
 
 class User(Base):
     __tablename__ = "users"
@@ -14,5 +16,6 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.datetime.now)
     updated_at = Column(DateTime, onupdate=datetime.datetime.now)
 
+    roles = relationship("Role", secondary=user_role, back_populates="users")
     def __repr__(self):
-        return f"<Utilisateur(id={self.id}, email={self.email}, role={self.role})>"
+        return f"<Utilisateur(id={self.id}, email={self.email}, role={self.roles}>"
