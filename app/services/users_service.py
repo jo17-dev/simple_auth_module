@@ -1,6 +1,6 @@
 from datetime import datetime
 from fastapi import status, HTTPException
-from config.env import settings
+from app.config.env import settings
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher
 from app.services.repositories.users import UserRepo
@@ -64,7 +64,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
         
         if not user:
             print("Token non valide")
-            raise HTTPException(403, "Token non valide")
+            raise HTTPException(403, "Invalid token. the user does not exist anymore")
         
         if decoded_values.typ != "refresh":
             raise HTTPException(401, "Bad token type. you need to provide a refresh token here")
@@ -76,7 +76,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
                 used_refresh_token = UsedToken()
                 used_refresh_token.user_id = user.id
                 used_refresh_token.identifier = decoded_values.id_token
-                token_view = create_refresh_and_access_tokens(user.id , settings.ROLE_SEPARATOR.join(user.roles)) ##   VERIFIE USER"ROLES
+                token_view = create_refresh_and_access_tokens(user.id , settings.ROLE_SEPARATOR.join(user.roles))
 
                 refresh_token_repo.ajouter(used_refresh_token, db)
 
@@ -87,8 +87,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"------------////---/// execption occurred:: {e} ")
-        raise HTTPException(500, "impossible de creer le token de rafraichissement")
+        raise HTTPException(500, f"impossible de creer le token de rafraichissement:: {e} ")
     
 
 # add a user
