@@ -43,7 +43,7 @@ def decrypt_token(token_view:TokenView)->TokenDatas:
     except ValueError as v:
         raise HTTPException(400, "datas retreived from token doesnt look familar")
     except Exception as e:
-        raise HTTPException(401, "couldn't decrypt the token")
+        raise HTTPException(401, f"couldn't decrypt the token {e} ")
 
 
 def create_refresh_and_access_tokens(user_id:int, user_role:str, id_refresh_token:str = str(uuid.uuid4())) -> TokenCreated :

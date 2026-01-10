@@ -5,14 +5,14 @@ from app.services.repositories.users import UserRepo
 from argon2 import PasswordHasher
 from app.services.repositories.used_token import TokenRepository
 from app.services.model import UsedToken
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from app.config.env import settings
 from datetime import datetime
 from app.services.token_service import  create_refresh_and_access_tokens, decrypt_token
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 user_repo = UserRepo()
 refresh_token_repo = TokenRepository()
-
 
 password_hasher = PasswordHasher(
     time_cost=3,
