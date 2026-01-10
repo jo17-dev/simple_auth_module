@@ -71,10 +71,30 @@ def get_user_infos(token_view: TokenView, db: Session)->UserInfo:
     if expiration_timestamp and datetime.fromtimestamp(expiration_timestamp) < datetime.now():
         raise HTTPException(401, "Token expired")
     
-    user = user_repo.get_by_id(user_id, db)
+    try:
+        user = user_repo.get_by_id(user_id, db)    
+        if not user:
+            raise HTTPException(404, "The user was not found.")
+        result = UserInfo(email = user.email, roles=[ item.title.lower() for item in user.roles], id=user_id)
+        return result
+    except UserException as ue:
+        raise HTTPException(500, ue.user_description)
+
+def delete(token_view: TokenView, db: Session)->bool:
+    decoded_values = decrypt_token(token_view)
+    expiration_timestamp = decoded_values.exp
+    user_id = int(decoded_values.uid)
+
+    if expiration_timestamp and datetime.fromtimestamp(expiration_timestamp) < datetime.now():
+        raise HTTPException(401, "Token expired")
     
-    if not user:
-        raise HTTPException(404, "The user was not found.")
+    try:        
+        user = user_repo.get_by_id(user_id, db)    
+        if not user:
+            raise HTTPException(404, "The user was not found.")
+        else:
+            user_repo.delete(user_id, db)
+    except UserException as ue:
+        raise HTTPException(500, ue.user_description)
     
-    result = UserInfo(email = user.email, roles=[ item.title.lower() for item in user.roles], id=user_id)
-    return result
+    return True

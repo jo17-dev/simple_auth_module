@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.interface.view_models.user import UserCreation, UserInfo, UserCreated
 from app.interface.view_models.token import TokenView
-from app.services.users_service import add_user, get_user_infos
+from app.services.users_service import add_user, get_user_infos, delete
 from app.data.database import get_db
 from sqlalchemy.orm import Session
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -39,5 +39,12 @@ def update_user(user: UserCreation):
 
 # delete a user
 @router.delete("/")
-def delete_user(user: UserCreation):
-    pass
+def delete_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    try:
+        token_view = TokenView(token=credentials.credentials)
+        retreived_user_infos = delete(token_view, db)
+        return retreived_user_infos
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(500, e)
