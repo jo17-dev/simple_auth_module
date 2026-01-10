@@ -10,12 +10,12 @@ class RoleEnum(str, Enum):
 
 
 class UserBase(BaseModel):
-    email: str  = Field(..., example="email@example.com")
-    roles: List[RoleEnum] = Field(..., example=["user", "admin"])
+    email: str  = Field(..., json_schema_extra="email@example.com")
+    roles: List[RoleEnum] = Field(..., json_schema_extra=["user", "admin"])
 
 
 class UserCreation(UserBase):
-    password: str = Field(..., example="ReaaaalPass23word!")
+    password: str = Field(..., json_schema_extra="ReaaaalPass23word!")
 
 
 class UserIdentifier(BaseModel):
