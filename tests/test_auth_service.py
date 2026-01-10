@@ -5,7 +5,7 @@ from app.services.model import UsedToken
 from app.services.repositories.users import UserRepo
 from datetime import datetime, timedelta
 
-from app.services.auth_service import  refresh_token, validate_token
+from app.services.auth_service import  refresh_token, validate_token, log_in
 
 
 def test_refresh_token_expired(monkeypatch, db_session, token_view, refresh_token_datas):
@@ -232,4 +232,57 @@ def test_validate_token_user_not_found(
     with pytest.raises(HTTPException) as exc:
         validate_token(token_view, db_session)
     
+    assert exc.value.status_code == 400
+
+
+# tests login
+
+def test_log_in_user_not_found(
+    monkeypatch,
+    db_session,
+    user_login_datas
+):
+    def mock_get_by_email(self, email, db_session):
+        return None
+
+    monkeypatch.setattr(
+        UserRepo,
+        "get_by_email",
+        mock_get_by_email
+    )
+
+    with pytest.raises(HTTPException) as exc:
+        log_in(user_login_datas, db_session)
+
+    assert exc.value.status_code == 400
+
+
+def test_log_in_password_not_good(
+    monkeypatch,
+    db_session,
+    user_login_datas,
+    valid_token_created
+):
+    def mock_get_by_email(self, email, db_session):
+        return User(password="dddddddddd")
+
+    monkeypatch.setattr(
+        UserRepo,
+        "get_by_email",
+        mock_get_by_email
+    )
+
+    monkeypatch.setattr(
+        "app.services.auth_service.verify_hashed_string",
+        lambda target, hashed_string: False
+    )
+
+    monkeypatch.setattr(
+        "app.services.auth_service.create_refresh_and_access_tokens",
+        lambda user_id, roles: valid_token_created
+    )
+
+    with pytest.raises(HTTPException) as exc:
+        log_in(user_login_datas, db_session)
+
     assert exc.value.status_code == 400

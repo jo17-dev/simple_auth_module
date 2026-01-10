@@ -6,7 +6,7 @@ from app.services.model  import UsedToken
 from app.data.database import Base
 from datetime import datetime, timedelta
 from app.interface.view_models.token  import TokenDatas, TokenView, TokenCreated
-from app.interface.view_models.user  import UserCreation
+from app.interface.view_models.user  import UserCreation, UserLogin
 
 
 @pytest.fixture(scope="function")
@@ -70,4 +70,11 @@ def valid_token_created():
     return TokenCreated(
         access_token="template.access.token",
         refresh_token="why.areyou.readingthis"
+    )
+
+@pytest.fixture
+def user_login_datas():
+    return UserLogin(
+        email="bob@gmail.com",
+        password="hahaHAha#123"
     )
