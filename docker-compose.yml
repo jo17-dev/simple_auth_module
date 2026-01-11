@@ -23,7 +23,7 @@ services:
   sam_application:
     build:
       context: .
-      dockerfile: Dockerfile.auth
+      dockerfile: Dockerfile.sam
     container_name: sam_application
     ports:
       - "${PORT}:8000"
