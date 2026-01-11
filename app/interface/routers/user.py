@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.interface.view_models.user import UserCreation, UserInfo, UserCreated
+from app.interface.view_models.user import UserCreation, UserInfo, UserCreated, UserUpdate
 from app.interface.view_models.token import TokenView
-from app.services.users_service import add_user, get_user_infos, delete
+from app.services.users_service import add_user, get_user_infos, delete, update
 from app.data.database import get_db
 from sqlalchemy.orm import Session
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -34,8 +34,15 @@ def get_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: 
 
 # update a user
 @router.put("/")
-def update_user(user: UserCreation):
-    pass
+def update_user(user: UserUpdate, credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    try:
+        token_view = TokenView(token=credentials.credentials)
+        retreived_user_infos = update(token_view, user ,db)
+        return dict(details="Your informations have been updated successfully")
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(500, "something unexpected happened.. please contact the admins")
 
 # delete a user
 @router.delete("/")

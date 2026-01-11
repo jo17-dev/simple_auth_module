@@ -12,8 +12,14 @@ class UserRepo:
         except Exception as e:
             raise UserException(f"UserException :: ${e} ", "The user was not added in the db, sorry")
 
-    def update(self):
-        pass
+    def update(self, updated_user: User, db: Session):
+        try:
+            db.add(updated_user)
+            db.commit()
+            db.refresh(updated_user)
+            return updated_user
+        except Exception as e:
+            raise UserException(f"UserException :: ${e} ", "The user was not added in the db, sorry")
 
     def delete(self, user_id: int, db: Session):
         try:

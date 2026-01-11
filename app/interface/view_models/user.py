@@ -32,3 +32,7 @@ class UserInfo(UserBase):
 class UserCreated(UserBase, TokenCreated):
     email: str
     roles: List[RoleEnum]
+
+class UserUpdate(BaseModel):
+    password: str | None = None
+    email: str | None = None

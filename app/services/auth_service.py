@@ -33,10 +33,11 @@ def hash_string(target: str) -> str:
 
 def verify_hashed_string(target: str, hashed: str) -> bool:
     try:
-        return password_hasher.verify(hashed, target)
+        password_hasher.verify(hashed, target)
+        return True
     except Exception as e:
         print(f"Erreur de verification de mot de passe {e} ")
-        raise HTTPException(500, "quelque chose s'est mal passé.. revenez plus tards")
+        return False
 
 
 def log_in(user_login_datas: UserLogin, db: Session)->TokenCreated:

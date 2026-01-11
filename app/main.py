@@ -4,7 +4,10 @@ from app.interface.routers.auth import router as auth_router
 from app.interface.routers.user import router as user_router
 from app.config.logger import logger
 
-app = FastAPI()
+app = FastAPI(
+    title="S.A.M - simple auth module", 
+    description="sam is a fastapi module who manages authentification via tokens and users via thiers email, password and roles "
+    )
 app_router = APIRouter()
 app_router.include_router(auth_router, prefix="/auth", tags=["Token management"])
 app_router.include_router(user_router, prefix="/user", tags=["Users management"])
