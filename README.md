@@ -28,7 +28,6 @@ Planned improvements for SAM include:
 
 - Implementing a admin management for roles and other users
 - Completing and improving unit test coverage
-- Role and permission management handled by an administrator
 - Internationalization of strings to support multiple languages
 
 ## Contributing
