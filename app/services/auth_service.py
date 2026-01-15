@@ -5,11 +5,9 @@ from app.services.repositories.users import UserRepo
 from argon2 import PasswordHasher
 from app.services.repositories.used_token import TokenRepository
 from app.services.model import UsedToken
-from fastapi import HTTPException, Depends
-from app.config.env import settings
+from fastapi import HTTPException
 from datetime import datetime
 from app.services.token_service import  create_refresh_and_access_tokens, decrypt_token
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 user_repo = UserRepo()
 refresh_token_repo = TokenRepository()
@@ -48,13 +46,8 @@ def log_in(user_login_datas: UserLogin, db: Session)->TokenCreated:
     
     if verify_hashed_string(user_login_datas.password, found_user.password) == False:
         raise HTTPException(400, "Try again ")
-    
-    roles_stringified =""
-
-    for role_item in found_user.roles:
-        roles_stringified = roles_stringified + settings.ROLE_SEPARATOR + role_item.title
-    
-    tokens = create_refresh_and_access_tokens(found_user.id, roles_stringified)
+        
+    tokens = create_refresh_and_access_tokens(found_user.id, [role.title.lower() for role in found_user.roles ])
 
     return tokens
 
@@ -66,7 +59,7 @@ def log_in(user_login_datas: UserLogin, db: Session)->TokenCreated:
 # créer les tokens
 def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
     try:
-        decoded_values = decrypt_token(refresh_token.token)
+        decoded_values = decrypt_token(refresh_token)
         expiration_timestamp = decoded_values.exp
         user_id = int(decoded_values.uid)
 
@@ -90,7 +83,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
                 used_refresh_token = UsedToken()
                 used_refresh_token.user_id = user.id
                 used_refresh_token.identifier = decoded_values.id_token
-                token_view = create_refresh_and_access_tokens(user.id , settings.ROLE_SEPARATOR.join(user.roles))
+                token_view = create_refresh_and_access_tokens(user.id , [role.title.lower() for role in user.roles])
 
                 refresh_token_repo.ajouter(used_refresh_token, db)
 
@@ -101,7 +94,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
     except HTTPException as he:
         raise he
     except Exception as e:
-        raise HTTPException(500, f"impossible de creer le token de rafraichissement:: {e} ")
+        raise HTTPException(500, "impossible de creer le token de rafraichissement")
 
 
 def validate_token(token_view: TokenView, db: Session)->TokenDatas:
