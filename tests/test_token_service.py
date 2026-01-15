@@ -39,7 +39,7 @@ def test_create_refresh_and_access_tokens_returns_tokens(monkeypatch):
     fixed_uuid = "123e4567-e89b-12d3-a456-426614174000"
     monkeypatch.setattr("uuid.uuid4", lambda: uuid.UUID(fixed_uuid))
     
-    tokens: TokenCreated = create_refresh_and_access_tokens(user_id=1, user_role="admin")
+    tokens: TokenCreated = create_refresh_and_access_tokens(user_id=1, user_roles=["admin"])
     assert isinstance(tokens.access_token, str)
     assert isinstance(tokens.refresh_token, str)
 
@@ -47,8 +47,8 @@ def test_create_refresh_and_access_tokens_returns_tokens(monkeypatch):
     decoded_refresh = jwt.decode(tokens.refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
 
     assert decoded_access["sub"] == "1"
-    assert decoded_access["role"] == "admin"
-    assert decoded_access["typ"] == "bearer"
+    assert decoded_access["role"] == ["admin"]
+    assert decoded_access["typ"] == "access"
 
     assert decoded_refresh["sub"] == "1"
     assert decoded_refresh["typ"] == "refresh"
@@ -90,7 +90,7 @@ def test_decrypt_token_invalid_type_raises():
     # token qui viole les règles
     token_str = create_token({
         "sub": "1",
-        "typ": "bearer",
+        "typ": "access",
         "role": None,
         "exp": int((datetime.now() + timedelta(minutes=5)).timestamp())
     })
@@ -109,7 +109,7 @@ def test_decrypt_token_invalid_jwt_raises():
 
 def test_issue_token_returns_token_created():
     user_id=34
-    roleString="admin|guest"
-    token_created: TokenCreated = issue_token(user_id, roleString)
+    roles=["admin","guest"]
+    token_created: TokenCreated = issue_token(user_id, roles)
     assert isinstance(token_created.access_token, str)
     assert isinstance(token_created.refresh_token, str)

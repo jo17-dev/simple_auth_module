@@ -7,8 +7,8 @@ from datetime import timedelta
 import uuid
 
 # Generalate access and refresh tokens
-def issue_token(user_id: int, rolesString: str)-> TokenCreated:
-    return create_refresh_and_access_tokens(user_id, user_role=rolesString)
+def issue_token(user_id: int, roles: list)-> TokenCreated:
+    return create_refresh_and_access_tokens(user_id, roles)
 
 # create a token string based on datas
 def create_token(data: dict):
@@ -36,7 +36,7 @@ def decrypt_token(token_view:TokenView)->TokenDatas:
         if response.typ == 'refresh':
             if (response.id_token is None) or (response.role is not None) or (response.exp is None):
                 raise ValueError("datas retreived from token doesnt look familar")
-        elif response.typ == "bearer":
+        elif response.typ == "access":
             if response.role is None:
                 raise ValueError("datas retreived from token doesnt look familar")
         return response
@@ -46,20 +46,22 @@ def decrypt_token(token_view:TokenView)->TokenDatas:
         raise HTTPException(401, f"couldn't decrypt the token {e} ")
 
 
-def create_refresh_and_access_tokens(user_id:int, user_role:str, id_refresh_token:str = str(uuid.uuid4())) -> TokenCreated :
+def create_refresh_and_access_tokens(user_id:int, user_roles:list, id_refresh_token:str = str(uuid.uuid4())) -> TokenCreated :
     try:
         access_token = create_token({
             "sub": str(user_id), # PyJWT à besoin du sub en string
-            "role":  user_role,
-            "typ": "bearer",
-            "exp": (int) ((datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)).timestamp())
+            "role":  user_roles,
+            "typ": "access",
+            "exp": (int) ((datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)).timestamp()),
+            "iat": int(datetime.now().timestamp())
         })
 
         refresh_token = create_token({
             "sub": str(user_id), # PyJWT à besoin du sub en string
             "typ": "refresh",
             "id_token": id_refresh_token, # identifiant unique du token
-            "exp": (int) ((datetime.now() + timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)).timestamp())
+            "exp": (int) ((datetime.now() + timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)).timestamp()),
+            "iat": int(datetime.now().timestamp())
         })
 
         return TokenCreated(
@@ -67,4 +69,4 @@ def create_refresh_and_access_tokens(user_id:int, user_role:str, id_refresh_toke
             refresh_token=refresh_token
         )
     except Exception as e:
-        raise HTTPException(500, "Impossible de générer de token")
+        raise HTTPException(500, f"Impossible de générer de token {e}")
