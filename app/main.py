@@ -8,7 +8,7 @@ from app.config.env import settings
 app = FastAPI(
     title="S.A.M - simple auth module", 
     description="sam is a fastapi module who manages authentification via tokens and users via thiers email, password and roles ",
-    version=settings.API_VERSION
+    version = "wip - 2.0.0"
     )
 app_router = APIRouter()
 app_router.include_router(auth_router, prefix="/auth", tags=["Token management"])
