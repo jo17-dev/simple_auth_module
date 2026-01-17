@@ -9,7 +9,7 @@ class TokenDatas(BaseModel):
     uid: str = None
     typ: str = None
     exp: int | None = None
-    role: str | None = None
+    role: list | None = None
     id_token: str | None = None
 
 

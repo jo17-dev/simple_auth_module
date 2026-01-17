@@ -56,7 +56,7 @@ def add_user(user_to_add: UserCreation, db_session: Session )-> UserCreated:
     except UserException as e:
         raise HTTPException(500, e.user_description)
     
-    tokens = create_refresh_and_access_tokens(added_user.id, settings.ROLE_SEPARATOR.join(user_to_add.roles))
+    tokens = create_refresh_and_access_tokens(added_user.id, [ item.title.lower() for item in added_user.roles])
 
     result = UserCreated(email=user_to_add.email , roles=user_to_add.roles, access_token=tokens.access_token, refresh_token=tokens.refresh_token)
 
