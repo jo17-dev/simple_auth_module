@@ -35,5 +35,5 @@ Planned improvements for SAM include:
 SAM is an open source project and contributions are welcome.  
 You can submit improvements, bug fixes, or new features through pull requests.
 
-Feel free to [contact me](https://www.linkedin.com/in/joel-t-0745a4283/) if you would like to discuss the project or propose future enhancements.
+Feel free to [contact me](https://www.linkedin.com/in/joel-bertrand-tsafack) if you would like to discuss the project or propose future enhancements.
 
