@@ -44,10 +44,10 @@ def log_in(user_login_datas: UserLogin, db: Session)->TokenCreated:
     found_user = user_repo.get_by_email(user_login_datas.email, db)
 
     if found_user is None:
-        raise HTTPException(400, "Try again.. ")
+        raise HTTPException(400, "Try again")
     
     if verify_hashed_string(user_login_datas.password, found_user.password) == False:
-        raise HTTPException(400, "Try again ")
+        raise HTTPException(400, "Try again")
     
     roles_stringified =""
 
@@ -66,7 +66,7 @@ def log_in(user_login_datas: UserLogin, db: Session)->TokenCreated:
 # créer les tokens
 def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
     try:
-        decoded_values = decrypt_token(refresh_token.token)
+        decoded_values = decrypt_token(refresh_token)
         expiration_timestamp = decoded_values.exp
         user_id = int(decoded_values.uid)
 
@@ -90,6 +90,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
                 used_refresh_token = UsedToken()
                 used_refresh_token.user_id = user.id
                 used_refresh_token.identifier = decoded_values.id_token
+                used_refresh_token.content = "" # no need to store the token. i will remote this later sorry
                 token_view = create_refresh_and_access_tokens(user.id , settings.ROLE_SEPARATOR.join(user.roles))
 
                 refresh_token_repo.ajouter(used_refresh_token, db)
@@ -105,7 +106,7 @@ def refresh_token(refresh_token: TokenView, db: Session) ->TokenCreated :
 
 
 def validate_token(token_view: TokenView, db: Session)->TokenDatas:
-    decoded_values = decrypt_token(token_view.token)
+    decoded_values = decrypt_token(token_view)
     expiration_timestamp = decoded_values.exp
     user_id = int(decoded_values.uid)
 

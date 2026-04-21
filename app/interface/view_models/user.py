@@ -5,13 +5,13 @@ from app.interface.view_models.token import TokenCreated
 
 class RoleEnum(str, Enum):
     admin = "admin"
-    user = "user"
-    manager = "manager"
+    client = "client"
+    employee = "employee" 
 
 
 class UserBase(BaseModel):
     email: str  = Field(..., json_schema_extra={"example": "email@example.com"})
-    roles: List[RoleEnum] = Field(..., json_schema_extra={"example": ["user", "admin"]})
+    roles: List[RoleEnum] = Field(..., json_schema_extra={"example": ["employee", "admin"]})
 
 
 class UserCreation(UserBase):

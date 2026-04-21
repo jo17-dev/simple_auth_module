@@ -20,11 +20,11 @@ services:
       start_period: 5s
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
-  sam_application:
+  sam_api:
     build:
       context: .
       dockerfile: Dockerfile.sam
-    container_name: sam_application
+    container_name: sam_api
     ports:
       - "${PORT}:8000"
     environment:
@@ -32,3 +32,7 @@ services:
     depends_on:
       sam_db:
         condition: service_healthy
+
+networks:
+  default:
+    name: ${NETWORK_NAME}

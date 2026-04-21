@@ -3,8 +3,8 @@ USE sam_db;
 INSERT INTO roles (title, created_at)
 VALUES
     ('USER', NOW()),
-    ('MANAGER', NOW()),
-    ('ADMIN', NOW());
+    ('CLIENT', NOW()),
+    ('EMPLOYEE', NOW());
 
 -- the password is: passe
 INSERT INTO users (email, password, created_at)
@@ -18,8 +18,8 @@ VALUES
 
 INSERT INTO user_role (user_id, role_id)
 VALUES
-    (1, 1), -- guest1 -> GUEST
-    (2, 1), -- guest2 -> GUEST
-    (3, 2), -- client1 -> CLIENT
-    (4, 2), -- client2 -> CLIENT
-    (5, 3); -- admin -> ADMIN
+    (1, 1),
+    (2, 1),
+    (3, 2),
+    (4, 2),
+    (5, 3);
